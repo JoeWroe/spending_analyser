@@ -192,3 +192,8 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Manual additions
+.DS_Store
+test/test_data/obfuscated_live_files/
+.talismanrc
