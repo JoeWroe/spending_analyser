@@ -8,6 +8,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
 @app.get("/transactions")
 def read_all_transactions():
     db: Session = SessionLocal()

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from ..database import Base
 
+
 class Transaction(Base):
     __tablename__ = "transactions"
 
@@ -20,5 +21,3 @@ class Transaction(Base):
     category_split = Column(String, nullable=True)
     money_out = Column(Float, nullable=True)
     money_in = Column(Float, nullable=True)
-    
-    
