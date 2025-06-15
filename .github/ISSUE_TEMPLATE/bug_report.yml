@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the info below.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug in a few sentences.
+      placeholder: Tell us what you expected and what actually happened.
+    validations:
+      required: true
+
+  - type: input
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: "Optional: If applicable, provide a quick list of steps to reproduce the issue."
+      placeholder: "1. Run this... 2. Do that... 3. See error..."
+  
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: "Optional: OS, Node/Python version, dependencies, etc."
+      placeholder: "e.g. macOS 14, Node 20.0.0"
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Anything else?
+      description: Add any other context, logs, screenshots, or ideas here.

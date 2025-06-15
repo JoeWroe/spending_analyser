@@ -1,0 +1,32 @@
+name: User Story
+description: Create a new feature or improvement using the user story format
+title: "[Story]: "
+labels: ["user story", "enhancement"]
+body:
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User Story
+      description: Write the story in the format: "As a [type of user], I want [some goal] so that [some reason]."
+      placeholder: As a user, I want to upload a profile picture so that others can recognize me.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List the criteria that must be met for the story to be complete.
+      placeholder: |
+        - [ ] User can upload .jpg and .png files
+        - [ ] File size is limited to 5MB
+        - [ ] Image appears on the profile page after upload
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / Context
+      description: Add any additional information, links, or context that will help complete this story.
+      placeholder: Relevant designs, references to other issues, dependencies, etc.
