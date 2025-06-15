@@ -6,8 +6,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
 
     transaction_id = Column(String, primary_key=True, index=True)
-    date = Column(DateTime, nullable=False)
-    time = Column(DateTime, nullable=False)
+    datetime = Column(DateTime, nullable=False)
     type = Column(String, nullable=False)
     name = Column(String, nullable=False)
     category = Column(String, nullable=False)

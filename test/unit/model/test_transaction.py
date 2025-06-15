@@ -8,8 +8,7 @@ from app.models.transaction import Transaction
 def test_transaction_model_fields():
     transaction = Transaction(
         transaction_id="abc123",
-        date=datetime(2023, 1, 1),
-        time=datetime(2023, 1, 1, 12, 0),
+        datetime=datetime(2023, 1, 1, 12, 0),
         type="Debit",
         name="Coffee Shop",
         category="Food & Drink",
@@ -39,8 +38,7 @@ def test_transaction_model_commit():
     try:
         transaction = Transaction(
             transaction_id="txn001",
-            date=datetime(2023, 1, 1),
-            time=datetime(2023, 1, 1, 12, 0),
+            datetime=datetime(2023, 1, 1, 12, 0),
             type="Credit",
             name="Salary",
             category="Income",

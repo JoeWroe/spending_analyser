@@ -13,8 +13,7 @@ def ingest_statement_csv(file_path: str):
     for _, row in statement_dataframe.iterrows():
         transaction = Transaction(
             transaction_id=row["Transaction ID"],
-            date=datetime.strptime(row["Date"], "%d/%m/%Y").date(),
-            time=datetime.strptime(row["Time"], "%H:%M:%S").time(),
+            datetime=datetime.strptime(f"{row['Date']} {row['Time']}", "%d/%m/%Y %H:%M:%S"),
             type=row["Type"],
             name=row["Name"],
             category=row["Category"],
