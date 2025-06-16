@@ -103,10 +103,39 @@ You can now access the API at `http://localhost:8000/transactions`.
 
 ### :cloud: Deployment
 
-For deployment, you can use Terraform to set up the infrastructure. Ensure you have `terraform` installed and configured. Then run:
+For deployment, you can use Terraform to set up the infrastructure. Ensure you have `terraform` installed and configured.
+
+#### :key: Authenticate to AWS. 
+
+Setup your .aws/credentials file. It sould contain a block like this:
+
+```bash
+[banking_apps_dev]
+sso_start_url = ${portal_url_in_1password}
+sso_region = eu-west-2
+sso_account_id = ${aws_account_id_in_1password}
+sso_role_name = AdministratorAccess
+region = eu-west-2
+output = json
+```
+Then, run the following commands to login to AWS:
+```bash
+aws sso login --profile banking_apps_dev
+```
+
+#### :ringed_planet: Setup
+Navigate to the `infra` directory and run the following commands to initialize and apply the Terraform configuration:
 
 ```bash
 cd infra
 terraform init
 terraform apply
+```
+
+#### :bomb: Tear Down
+Navigate to the `infra` directory and run the following command to destroy the infrastructure:
+
+```bash
+cd infra
+terraform destroy
 ```
