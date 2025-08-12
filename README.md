@@ -1,14 +1,14 @@
 # Spending Analyser
 
 ## :chart_with_upwards_trend: Project Overview
-**Spending Analyser** is a personal finance tool which helps you better understand your finances, especially your spending. It works by ingesting a `.csv` of your bank statement, writting it to a database and exposing the data as an API. The future goal of the project will be to use that API to perform analysis, create views and charts, catagorise, filter and understand your spending.
+**Spending Analyser** is a personal finance tool which helps you better understand your finances, especially your spending. It works by ingesting a `.csv` of your bank statement, writing it to a database and exposing the data as an API. The future goal of the project will be to use that API to perform analysis, create views and charts, categorise, filter and understand your spending.
 
 ### :bank: Currently Supported Bank Statements
 Monzo
 
 ## :wrench: Current Features
 - `.csv` ingestion for Monzo bank statements
-- Parsing of the stements into transactions
+- Parsing of the statements into transactions
 - Storage of transactions in a local database
 - ReSTful API to access transactions
 
@@ -19,16 +19,28 @@ Monzo
 ```plaintext
 │
 ├── app/                                # Core application logic
+│   ├── handlers/                       # Request handlers
+│   │   └── statement_ingestor.py       # Statement ingestion handler
 │   ├── models/                         # Database models
 │   │   └── transaction.py              # Transaction model
 │   ├── api.py                          # API endpoints
 │   ├── database.py                     # Database connection
 │   └── ingest.py                       # Ingestion logic
 │
-├── test
-│   └── unit/
+├── infra/                              # Infrastructure and deployment
+│   ├── lambda/                         # Lambda function artifacts
+│   │   └── statement_ingestor.zip      # Packaged lambda function
+│   ├── main.tf                         # Main Terraform configuration
+│   ├── outputs.tf                      # Terraform outputs
+│   └── variables.tf                    # Terraform variables
+│
+├── test/                               # Test suite
+│   ├── test_data/                      # Test data files
+│   │   └── obfuscated_live_files/      # Sample bank statements
+│   │       └── statement_1_month_10_rows.csv
+│   └── unit/                           # Unit tests
 │       ├── model/
-│       │    └── test_transaction.py    # Unit tests for Transaction model
+│       │   └── test_transaction.py     # Unit tests for Transaction model
 │       ├── test_api.py                 # Unit tests for API
 │       ├── test_database.py            # Unit tests for Database
 │       └── test_ingest.py              # Unit tests for Ingestion
@@ -36,7 +48,7 @@ Monzo
 ├── .gitignore                          # Files to ignore in git
 ├── README.md                           # Project documentation
 ├── main.py                             # Entry point for the application
-├── pytest.ini                          # Pytest configuration
+├── pytest.ini                         # Pytest configuration
 ├── requirements.txt                    # Python dependencies
 └── setup.py                            # Setup script for packaging
 
@@ -83,7 +95,7 @@ pytest
 Create the local database file with:
 
 ```bash
-python setup.db
+python setup.py
 ```
 This should create a `banking.db` file in the root directory. This is your local DB.
 
