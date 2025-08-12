@@ -65,21 +65,34 @@ Monzo
 
 ### :package: Installation
 
-1. Clone the repository:
+#### 1. Clone the Repository
 ```bash
-# Clone the repository
 git clone https://github.com/yourusername/spending_analyser.git
 cd spending_analyser
+```
 
+#### 2. Set Up Python Virtual Environment
+```bash
 # Create a virtual environment
 python -m venv venv
 
-# Activate the virtual environment
+# Activate the virtual environment (Linux/macOS)
 source venv/bin/activate
 
-# Install the required packages
+# For Windows users:
+# venv\Scripts\activate
+```
+
+#### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
 ```
+
+#### 4. Set Up Local Database
+```bash
+python setup.py
+```
+This creates a `banking.db` file in the root directory.
 
 ### :test_tube: Running the Tests
 
@@ -101,7 +114,7 @@ This should create a `banking.db` file in the root directory. This is your local
 
 Next, run the ingestion with a sample Monzo CSV statement file:
 
-```bash
+```python
 python -c "from app.ingest import ingest_statement_csv; ingest_statement_csv('./test/test_data/obfuscated_live_files/statement_1_month_10_rows.csv')"
 ```
 
@@ -119,9 +132,9 @@ For deployment, you can use Terraform to set up the infrastructure. Ensure you h
 
 #### :key: Authenticate to AWS. 
 
-Setup your .aws/credentials file. It sould contain a block like this:
+Setup your .aws/credentials file. It should contain a block like this:
 
-```bash
+```ini
 [banking_apps_dev]
 sso_start_url = ${portal_url_in_1password}
 sso_region = eu-west-2
