@@ -1,14 +1,14 @@
 provider "aws" {
-  region = "eu-west-2"
-  profile = "banking_apps_dev"
+  region  = var.aws_region
+  profile = var.aws_profile
 }
 
 resource "aws_s3_bucket" "statement_csv_bucket" {
-  bucket = "statement-csv-upload-bucket"
+  bucket = "${var.environment}-statement-csv-upload-bucket"
 }
 
 resource "aws_iam_role" "statement_ingestor_execution_role" {
-  name = "statement_ingestor_execution_role"
+  name = "${var.environment}-statement-ingestor-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -28,13 +28,13 @@ resource "aws_iam_role_policy_attachment" "statement_ingestor_execution" {
 }
 
 resource "aws_lambda_function" "statement_ingestor" {
-  function_name = "StatementIngestor"
+  function_name = "${var.environment}-statement-ingestor"
   role          = aws_iam_role.statement_ingestor_execution_role.arn
   handler       = "statement_ingestor.ingest_statement"
-  runtime       = "python3.11"
+  runtime       = var.lambda_runtime
   filename      = "${path.module}/lambda/statement_ingestor.zip"
   source_code_hash = filebase64sha256("${path.module}/lambda/statement_ingestor.zip")
-  timeout       = 30
+  timeout       = var.lambda_timeout
 }
 
 resource "aws_s3_bucket_notification" "statement_bucket_notification" {

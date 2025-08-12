@@ -1,0 +1,13 @@
+# Copy this file to terraform.tfvars and customize the values
+
+aws_region  = "eu-west-2"
+aws_profile = "banking_apps_dev"
+project_name = "spending-analyser"
+environment = "dev"
+
+# S3 bucket name must be globally unique
+csv_upload_bucket_name = "your-unique-statement-csv-bucket-name"
+
+# Lambda configuration
+lambda_timeout = 30
+lambda_runtime = "python3.11"
