@@ -1,7 +1,7 @@
 # Spending Analyser
 
 ## :chart_with_upwards_trend: Project Overview
-**Spending Analyser** is a personal finance tool which helps you better understand your finances, especially your spending. It works by ingesting a `.csv` of your bank statement, writing it to a database and exposing the data as an API. The future goal of the project will be to use that API to perform analysis, create views and charts, categorise, filter and understand your spending.
+**Spending Analyser** is a personal finance tool which helps you better understand your finances, especially your spending. It works by ingesting a `.csv` of your bank statement, writing it to a database and exposing the data as a REST API built with FastAPI and SQLAlchemy. The future goal of the project will be to use that API to perform analysis, create views and charts, categorise, filter and understand your spending.
 
 ### :bank: Currently Supported Bank Statements
 Monzo
@@ -9,8 +9,10 @@ Monzo
 ## :wrench: Current Features
 - `.csv` ingestion for Monzo bank statements
 - Parsing of the statements into transactions
-- Storage of transactions in a local database
-- ReSTful API to access transactions
+- Storage of transactions in a local SQLite database
+- RESTful API built with FastAPI to access transactions
+- SQLAlchemy ORM for database operations
+- AWS deployment infrastructure with Terraform
 
 ## :building_construction: Future Features
 - Support for more bank statements
@@ -19,20 +21,38 @@ Monzo
 ```plaintext
 │
 ├── app/                                # Core application logic
+│   ├── __init__.py                     # Package initialization
 │   ├── handlers/                       # Request handlers
 │   │   └── statement_ingestor.py       # Statement ingestion handler
 │   ├── models/                         # Database models
 │   │   └── transaction.py              # Transaction model
-│   ├── api.py                          # API endpoints
-│   ├── database.py                     # Database connection
-│   └── ingest.py                       # Ingestion logic
+│   ├── api.py                          # FastAPI endpoints
+│   ├── database.py                     # SQLAlchemy database connection
+│   └── ingest.py                       # CSV ingestion logic
 │
 ├── infra/                              # Infrastructure and deployment
 │   ├── lambda/                         # Lambda function artifacts
 │   │   └── statement_ingestor.zip      # Packaged lambda function
+│   ├── modules/                        # Terraform modules
+│   │   ├── lambda/                     # Lambda module
+│   │   │   ├── main.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   ├── rds/                        # RDS module
+│   │   │   ├── main.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── variables.tf
+│   │   └── vpc/                        # VPC module
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
 │   ├── main.tf                         # Main Terraform configuration
 │   ├── outputs.tf                      # Terraform outputs
-│   └── variables.tf                    # Terraform variables
+│   ├── variables.tf                    # Terraform variables
+│   ├── terraform.tfvars                # Terraform variable values
+│   ├── terraform.tfvars.example        # Example terraform variables
+│   ├── terraform.tfstate               # Terraform state file
+│   └── terraform.tfstate.backup        # Terraform state backup
 │
 ├── test/                               # Test suite
 │   ├── test_data/                      # Test data files
@@ -45,9 +65,12 @@ Monzo
 │       ├── test_database.py            # Unit tests for Database
 │       └── test_ingest.py              # Unit tests for Ingestion
 │
+├── venv/                               # Python virtual environment
 ├── .gitignore                          # Files to ignore in git
+├── banking.db                          # Local SQLite database file
+├── easy_wins.md                        # Easy improvements and ideas
 ├── README.md                           # Project documentation
-├── main.py                             # Entry point for the application
+├── main.py                             # FastAPI application entry point
 ├── pytest.ini                         # Pytest configuration
 ├── requirements.txt                    # Python dependencies
 └── setup.py                            # Setup script for packaging
@@ -61,7 +84,8 @@ Monzo
 - Python 3.11
 - pip (Python package installer)
 - `venv` (optional but recommended for virtual environments)
-- `terraform` (for deployment)
+- `terraform` (for AWS deployment)
+- AWS CLI (for deployment authentication)
 
 ### :package: Installation
 
@@ -92,7 +116,7 @@ pip install -r requirements.txt
 ```bash
 python setup.py
 ```
-This creates a `banking.db` file in the root directory.
+This creates a `banking.db` SQLite file in the root directory.
 
 ### :test_tube: Running the Tests
 
@@ -105,12 +129,12 @@ pytest
 ### :hammer_and_wrench: Running the Application
 
 #### :hut: Local
-Create the local database file with:
+Create the local SQLite database file with:
 
 ```bash
 python setup.py
 ```
-This should create a `banking.db` file in the root directory. This is your local DB.
+This should create a `banking.db` file in the root directory. This is your local database.
 
 Next, run the ingestion with a sample Monzo CSV statement file:
 
@@ -118,7 +142,7 @@ Next, run the ingestion with a sample Monzo CSV statement file:
 python -c "from app.ingest import ingest_statement_csv; ingest_statement_csv('./test/test_data/obfuscated_live_files/statement_1_month_10_rows.csv')"
 ```
 
-Finally, run the application:
+Finally, run the FastAPI application:
 
 ```bash
 python main.py
