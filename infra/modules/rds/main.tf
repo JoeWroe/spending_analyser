@@ -18,6 +18,15 @@ resource "aws_security_group" "rds" {
     cidr_blocks = [var.vpc_cidr_block]
   }
 
+  # Temporary rule for direct access - REMOVE IN PRODUCTION
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["185.111.172.90/32"]
+    description = "Temporary direct access for development"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -44,6 +53,9 @@ resource "aws_db_instance" "main" {
   
   vpc_security_group_ids = [aws_security_group.rds.id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
+  
+  # Temporary for development - REMOVE IN PRODUCTION
+  publicly_accessible = true
   
   backup_retention_period = var.db_backup_retention_period
   backup_window          = var.db_backup_window
