@@ -48,3 +48,13 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "vpc_id" {
+  description = "VPC ID for Lambda deployment"
+  type        = string
+}
+
+variable "private_subnet_ids" {
+  description = "Private subnet IDs for Lambda deployment"
+  type        = list(string)
+}

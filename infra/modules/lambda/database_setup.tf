@@ -22,10 +22,25 @@ resource "aws_iam_role_policy_attachment" "database_setup_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-data "archive_file" "database_setup_zip" {
-  type        = "zip"
-  output_path = "${path.module}/../lambda/database_setup.zip"
-  source_dir  = "/tmp/db_lambda_package"
+resource "aws_iam_role_policy_attachment" "database_setup_vpc_execution" {
+  role       = aws_iam_role.database_setup_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_security_group" "database_setup_lambda" {
+  name_prefix = "${var.environment}-database-setup-lambda-"
+  vpc_id      = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-${var.project_name}-database-setup-lambda-sg"
+  }
 }
 
 resource "aws_lambda_function" "database_setup" {
@@ -33,10 +48,15 @@ resource "aws_lambda_function" "database_setup" {
   role          = aws_iam_role.database_setup_execution_role.arn
   handler       = "database_setup.setup_database"
   runtime       = var.lambda_runtime
-  filename      = data.archive_file.database_setup_zip.output_path
-  source_code_hash = data.archive_file.database_setup_zip.output_base64sha256
+  filename      = "${path.module}/../lambda/database_setup.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambda/database_setup.zip")
   timeout       = var.lambda_timeout
+  architectures = ["arm64"]
 
+  vpc_config {
+    subnet_ids         = var.private_subnet_ids
+    security_group_ids = [aws_security_group.database_setup_lambda.id]
+  }
 
   environment {
     variables = {

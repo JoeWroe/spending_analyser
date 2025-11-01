@@ -42,6 +42,9 @@ module "lambda" {
   lambda_timeout  = var.lambda_timeout
   lambda_zip_path = "${path.module}/lambda/statement_ingestor.zip"
 
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+
   db_endpoint = module.rds.db_instance_endpoint
   db_port     = module.rds.db_instance_port
   db_name     = var.db_name
