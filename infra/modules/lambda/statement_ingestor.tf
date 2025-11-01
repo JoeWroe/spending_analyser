@@ -21,7 +21,7 @@ resource "aws_iam_role" "statement_ingestor_execution_role" {
   })
 
   tags = {
-    Name = "${var.environment}-${var.project_name}-lambda-role"
+    Name = "${var.environment}-${var.project_name}-ingestor-lambda-role"
   }
 }
 
@@ -30,8 +30,8 @@ resource "aws_iam_role_policy_attachment" "statement_ingestor_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_iam_role_policy" "rds_access" {
-  name = "${var.environment}-lambda-rds-access"
+resource "aws_iam_role_policy" "statement_ingestor_s3_access" {
+  name = "${var.environment}-statement-ingestor-s3-access"
   role = aws_iam_role.statement_ingestor_execution_role.id
 
   policy = jsonencode({
@@ -40,10 +40,9 @@ resource "aws_iam_role_policy" "rds_access" {
       {
         Effect = "Allow"
         Action = [
-          "rds:DescribeDBInstances",
-          "rds-db:connect"
+          "s3:GetObject"
         ]
-        Resource = "*"
+        Resource = "${aws_s3_bucket.statement_csv_bucket.arn}/*"
       }
     ]
   })
@@ -60,16 +59,12 @@ resource "aws_lambda_function" "statement_ingestor" {
 
   environment {
     variables = {
-      DB_HOST     = var.db_endpoint
-      DB_PORT     = var.db_port
-      DB_NAME     = var.db_name
-      DB_USERNAME = var.db_username
-      DB_PASSWORD = var.db_password
+      DATABASE_URL = "postgresql://${var.db_username}:${var.db_password}@${var.db_endpoint}:${var.db_port}/${var.db_name}"
     }
   }
 
   tags = {
-    Name = "${var.environment}-${var.project_name}-lambda"
+    Name = "${var.environment}-${var.project_name}-ingestor-lambda"
   }
 }
 

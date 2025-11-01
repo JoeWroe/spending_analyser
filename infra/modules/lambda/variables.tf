@@ -19,7 +19,7 @@ variable "lambda_timeout" {
 }
 
 variable "lambda_zip_path" {
-  description = "Path to Lambda deployment package"
+  description = "Path to statement ingestor Lambda deployment package"
   type        = string
 }
 
